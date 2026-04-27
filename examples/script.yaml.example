@@ -10,11 +10,10 @@
 # First Folio only reads this file — it never modifies or creates it.
 
 # --- Shared metadata ---
-# Authoritative project-level values.
-# These override any title/author/subtitle found in the source document.
-title: About Time
-subtitle: A Play in One Act
-author: Taḋg Paul
+# These override the source document if set. In most cases, leave title/author
+# in the source doc (#+TITLE, #+AUTHOR) and only set date/version here.
+# title: About Time
+# author: Taḋg Paul
 date: "2026-04-26"
 version: "Draft v3"
 

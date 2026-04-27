@@ -54,14 +54,13 @@ First Folio reads configuration from `script.yaml` files. It never creates or mo
 ```yaml
 # ~/.config/first-folio/script.yaml or alongside your source file
 
-title: "About Time"
-author: "Tadhg Paul"
+date: "2026-04-26"
+version: "Draft v3"
 
 folio:
   font: EB Garamond
   font-size: 11pt
   page: a4
-  default-format: pdf
 ```
 
 All config sources are merged in precedence order: CLI flags > local `script.yaml` > global `script.yaml` > built-in defaults. The config file is shared with [yapper](https://github.com/tigger04/yapper) (TTS rendering).
