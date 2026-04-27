@@ -15,18 +15,18 @@ our $VERSION = '0.2.0';
 my $PRESET_DIR;
 BEGIN {
     require FindBin;
-    # When run from bin/folio, RealBin is bin/ so ../examples works.
+    # When run from bin/folio, RealBin is bin/ so ../presets works.
     # When run from project root scripts, RealBin is the project root.
-    my $candidate = "$FindBin::RealBin/../examples";
+    my $candidate = "$FindBin::RealBin/../presets";
     if (-d $candidate) {
         $PRESET_DIR = $candidate;
-    } elsif (-d "$FindBin::RealBin/examples") {
-        $PRESET_DIR = "$FindBin::RealBin/examples";
+    } elsif (-d "$FindBin::RealBin/presets") {
+        $PRESET_DIR = "$FindBin::RealBin/presets";
     } else {
-        # Walk up from lib/ to find examples/
+        # Walk up from lib/ to find presets/
         my $lib_dir = __FILE__;
         $lib_dir =~ s{/lib/Folio/Config\.pm$}{};
-        $PRESET_DIR = "$lib_dir/examples";
+        $PRESET_DIR = "$lib_dir/presets";
     }
 }
 

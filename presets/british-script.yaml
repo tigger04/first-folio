@@ -96,7 +96,7 @@ folio:
         placement: same-line
         align: left
         indent: 0
-        wrap-indent: 5em
+        wrap-indent: 7em
         bold: false
         italic: false
         case-transform: as-written

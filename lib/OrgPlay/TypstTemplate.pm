@@ -73,17 +73,19 @@ sub preamble {
     # Build Typst helper functions
     my $spk_weight = $spk_bold ? '"bold"' : '"regular"';
     my $spk_style  = $spk_italic ? '"italic"' : '"normal"';
-    my $spk_case_fn = _case_fn($spk_case);
 
     my $dir_open   = $dir_italic ? '_' : '';
     my $dir_close  = $dir_italic ? ' _' : '';
     my $dir_align_set = $dir_align ne 'left' ? "\n  set align($dir_align)" : '';
 
     my $act_weight = $act_bold ? '"bold"' : '"regular"';
-    my $act_case_fn = _case_fn($act_case);
     my $scn_weight = $scn_bold ? '"bold"' : '"regular"';
-    my $scn_case_fn = _case_fn($scn_case);
     my $fm_weight  = $fm_bold ? '"bold"' : '"regular"';
+
+    # Precompute case-wrapped content strings
+    my $spk_content = _case_wrap($spk_case, "${spk_prefix}#name${spk_suffix}");
+    my $act_content = _case_wrap($act_case, '#title');
+    my $scn_content = _case_wrap($scn_case, '#title');
 
     my $instr_open  = $instr_italic ? '_' : '';
     my $instr_close = $instr_italic ? '_' : '';
@@ -95,11 +97,11 @@ sub preamble {
 #let dialogue(name, direction: none, body) = {
   block(above: ${speech_space}, below: 0.2em)[
     #if direction != none [
-      #box(width: ${dial_wrap})[#text(weight: ${spk_weight})[${spk_case_fn}[${spk_prefix}#name${spk_suffix}]]]${instr_open}${instr_prefix}#direction${instr_suffix}${instr_close}
+      #box(width: ${dial_wrap})[#text(weight: ${spk_weight})[${spk_content}]]${instr_open}${instr_prefix}#direction${instr_suffix}${instr_close}
       #block(inset: (left: ${dial_wrap}))[#body]
     ] else [
       #par(hanging-indent: ${dial_wrap})[
-        #box(width: ${dial_wrap})[#text(weight: ${spk_weight})[${spk_case_fn}[${spk_prefix}#name${spk_suffix}]]]#body
+        #box(width: ${dial_wrap})[#text(weight: ${spk_weight})[${spk_content}]]#body
       ]
     ]
   ]
@@ -110,7 +112,7 @@ TYPST
         $dialogue_fn = <<"TYPST";
 #let dialogue(name, direction: none, body) = {
   block(above: ${speech_space}, below: 0.2em)[
-    #align(${spk_align})[#text(weight: ${spk_weight})[${spk_case_fn}[${spk_prefix}#name${spk_suffix}]]]
+    #align(${spk_align})[#text(weight: ${spk_weight})[${spk_content}]]
     #if direction != none [
       #align(${spk_align})[${instr_open}${instr_prefix}#direction${instr_suffix}${instr_close}]
     ]
@@ -137,14 +139,14 @@ ${dialogue_fn}
 // Act header
 #let act-header(title) = {
   v(${act_space})
-  align(${act_align})[#text(size: ${act_fsize}, weight: ${act_weight})[${act_case_fn}[#title]]]
+  align(${act_align})[#text(size: ${act_fsize}, weight: ${act_weight})[${act_content}]]
   v(0.8em)
 }
 
 // Scene header
 #let scene-header(title) = {
   v(${scn_space})
-  align(${scn_align})[#text(size: ${scn_fsize}, weight: ${scn_weight})[${scn_case_fn}[#title]]]
+  align(${scn_align})[#text(size: ${scn_fsize}, weight: ${scn_weight})[${scn_content}]]
   v(0.5em)
 }
 
@@ -285,13 +287,14 @@ TYPST
     return $out;
 }
 
-# Map case-transform config value to a Typst function wrapper
-sub _case_fn {
-    my ($case) = @_;
-    return '#upper'      if $case eq 'upper';
-    return '#smallcaps'  if $case eq 'small-caps';
-    return '#lower'      if $case eq 'lower';
-    return '';  # as-written: no transform
+# Wrap a Typst content expression with a case transform function.
+# Returns "content" or "#upper[content]" etc.
+sub _case_wrap {
+    my ($case, $content) = @_;
+    return "#upper[${content}]"     if $case eq 'upper';
+    return "#smallcaps[${content}]" if $case eq 'small-caps';
+    return "#lower[${content}]"     if $case eq 'lower';
+    return $content;  # as-written: no transform
 }
 
 1;

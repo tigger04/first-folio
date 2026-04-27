@@ -94,7 +94,7 @@ sub new {
         character_table_end => sub {
             if (@char_table_rows) {
                 my $esc_heading = _escape_typst($char_table_heading);
-                push @typst_body, "#align(center)[#text(size: 1.2em, weight: \"bold\")[${esc_heading}]]";
+                push @typst_body, "#text(size: 1.2em, weight: \"bold\")[${esc_heading}]";
                 push @typst_body, '#v(0.5em)';
                 push @typst_body, '#align(center)[#block(width: 85%)[';
                 push @typst_body, '#table(';
