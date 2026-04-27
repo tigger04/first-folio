@@ -1,6 +1,9 @@
 #+TITLE: Quadriplegia
+#+SUBTITLE: Aunt Jess Will Pay For This
 #+TEMPLATE: play
 #+AUTHOR: Taḋg Paul
+#+DATE: June 2025
+#+VERSION: 1.0 Production Ready
 #+STARTUP: showeverything
 #+OPTIONS: toc:nil
 * CHARACTERS

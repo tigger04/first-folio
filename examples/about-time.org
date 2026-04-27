@@ -1,6 +1,8 @@
-#+TITLE: About Time [working title]
-#+SUBTITLE: A Two-Act Play
+#+TITLE: About Time
+#+SUBTITLE: Working Title
 #+TEMPLATE: play
+#+DATE: 2026-04-27
+#+VERSION: Draft 0.1
 #+AUTHOR: Taḋg Paul
 #+STARTUP: showeverything
 #+OPTIONS: toc:nil
@@ -100,7 +102,7 @@ Speak for yourself.
 *** Beat.
 *** CÁIT looks around the kitchen, taking it in.
 *** The kettle begins to boil.
-*** Lights shift.
+***** Lights shift.
 
 
 ** Scene 2: The attic
@@ -272,7 +274,7 @@ NESSA! Come on!
 **** KEVIN shouting louder
 MAM! NESSA! COME ON!
 *** He gives the hatch one more shake, the hatch opens, he descends down the ladder.
-*** Lights fade.
+***** Lights fade.
 
 
 ** Scene 3: Reunion
@@ -378,7 +380,7 @@ Nessa.
 Why didn't you come back.
 *** Nobody hears that either.
 *** The family closes round him.
-*** Lights fade.
+***** Lights fade.
 
 
 ** Scene 4: The Tracker
@@ -514,7 +516,7 @@ Good boy.
 *** KEVIN stands in the jacket. Hand against the outside of it, over the spot where the device is sewn in. He doesn't press. He just rests his hand there.
 *** CÁIT watches him. Drinks.
 *** KEVIN watches her drink.
-*** Lights fade.
+***** Lights fade.
 
 
 ** Scene 5: Friction
@@ -641,7 +643,7 @@ You wouldn't have to look at that thing all the time.
 *** A long beat
 *** CÁIT freezes, examines her hand as if it belonged to someone else.
 *** After a brief beat, Kevin marches out of the room.
-*** Lights down
+***** Lights down
 
 
 ** Scene 6: In Theory
@@ -805,7 +807,7 @@ I just want to know.
 One day. One day we'll know.
 *** Sound heard offstage: a loud slap. /This is CÁIT slapping KEVIN across the face, concurrently with Scene 5./
 *** Both look at each other. Neither speaks. They stand. Exit BEN and NESSA.
-
+**** Split stage: Lights shift focus
 
 ** Scene 7: Out
 *** Kitchen. We see CÁIT sitting where we left her at the end of Scene 5, wine glass in front of her, looking at her hands. Bottle of wine on the table. She notices BEN and NESSA enter, looks down to her glass of wine, and takes a large gulp of it.
