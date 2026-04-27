@@ -20,6 +20,7 @@ sub new {
     my %footnotes;
     my @char_table_rows;
     my $char_table_heading = 'Characters';
+    my %known_characters;  # names from char table + character events
 
     my $emitter = {
         front_matter => sub {
@@ -58,11 +59,14 @@ sub new {
         stage_direction => sub {
             my ($text) = @_;
             if ($in_dialogue) { push @typst_body, ']'; $in_dialogue = 0; }
+            # Uppercase character names in stage directions (actor cue convention)
+            $text = _uppercase_character_names($text, \%known_characters);
             my $escaped = _escape_typst($text);
             push @typst_body, "#stage-direction[${escaped}]";
         },
         character => sub {
             my ($name, $direction) = @_;
+            $known_characters{$name} = 1;
             if ($in_dialogue) { push @typst_body, ']'; $in_dialogue = 0; }
             $in_dialogue = 1;
             my $dir_arg = '';
@@ -90,6 +94,7 @@ sub new {
         character_table_row => sub {
             my ($name, $desc) = @_;
             push @char_table_rows, [$name, $desc];
+            $known_characters{$name} = 1;
         },
         character_table_end => sub {
             if (@char_table_rows) {
@@ -220,6 +225,15 @@ sub finish_to_stdout {
     }
     close $pdf_fh;
     unlink $tmp_path;
+}
+
+# Uppercase known character names in stage direction text using word boundaries.
+sub _uppercase_character_names {
+    my ($text, $characters) = @_;
+    for my $name (keys %$characters) {
+        $text =~ s/\b\Q$name\E\b/uc($name)/ge;
+    }
+    return $text;
 }
 
 sub _escape_typst {

@@ -9,9 +9,9 @@
 
 * CHARACTERS
 |----------+---------------------------------------------------------------------|
-| BOB      | An ordinary man who drives an ordinary van and roams the land.      |
-| CÁIT     | His neighbour who goes into labour then things get much stranger    |
-| MAIRÉAD  | Bob's sister she's brilliant at twister but it gives her a blister. |
+| Bob      | An ordinary man who drives an ordinary van and roams the land.      |
+| Cáit     | His neighbour who goes into labour then things get much stranger    |
+| Mairéad  | Bob's sister she's brilliant at twister but it gives her a blister. |
 |----------+---------------------------------------------------------------------|
 
 * Synopsis
@@ -27,21 +27,21 @@ A kitchen in a semi-detached house in Galway. The room is warm and cluttered. A 
 * Act I
 ** Scene 1 — Morning Tea
 *** A kitchen. Morning. Sunlight through the window. A kettle sits on the counter.
-**** BOB
+**** Bob
 Good morning.
 
-*** BOB crosses to the kettle.
+*** Bob crosses to the kettle.
 
-**** CÁIT (entering)
+**** Cáit (entering)
 Is the kettle on?
 
 ***** CUT TO
 
-**** BOB cheerfully
+**** Bob, cheerfully
 Just boiled.
 
 ** Scene 2 — The Revelation
 *** Later. The kitchen table is covered with papers.
-**** MAIRÉAD
+**** Mairéad
 I'll have a cup too, thanks.
 I've something to tell you both.

@@ -168,18 +168,22 @@ sub parse {
 # Parse a character line (text after ****) into (name, direction_or_undef).
 # Handles all variants:
 #   BOB softly       -> (BOB, softly)
+#   Bob softly       -> (Bob, softly)
 #   BOB (softly)     -> (BOB, softly)
 #   BOB, softly      -> (BOB, softly)
-#   BOB, (softly)    -> (BOB, softly)
+#   Nurse Bayani     -> (Nurse Bayani, undef)
+#   NURSE BAYANI     -> (NURSE BAYANI, undef)
 #   BOB              -> (BOB, undef)
 sub _parse_character_line {
     my ($text) = @_;
 
-    # Match uppercase character name: one or more all-caps words.
-    # A word starting with uppercase followed by lowercase is direction, not name.
-    # e.g. "LOIS Following his gaze" -> name=LOIS, direction=Following his gaze
-    #      "NURSE BAYANI softly"     -> name=NURSE BAYANI, direction=softly
-    if ($text =~ /^(\p{Lu}+(?:\s+\p{Lu}+)*)\s*[,:]?\s*(.*)$/) {
+    # Name: one or more words starting with uppercase.
+    # Direction: starts with lowercase, or with parenthesis/comma.
+    # ALL CAPS words: BOB, NURSE BAYANI
+    # Title case words: Bob, Nurse Bayani
+    # Direction starts: softly, (entering), ,softly
+    # We greedily match capitalised words, stopping at lowercase-initial or punctuation.
+    if ($text =~ /^(\p{Lu}[\p{L}]*(?:\s+\p{Lu}[\p{L}]*)*)(?:\s*[,:]?\s*(.*))?$/) {
         my $name = $1;
         my $rest = $2;
 
