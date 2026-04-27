@@ -131,6 +131,14 @@ sub parse {
             next;
         }
 
+        # Transition: > TEXT (blockquote)
+        if ($line =~ /^>\s+(.+)$/) {
+            $emit->('transition', $1);
+            $after_character = 0;
+            $prev_blank = 0;
+            next;
+        }
+
         # Footnote definition: [^name]: text
         if ($line =~ /^\[\^(\S+)\]:\s+(.+)$/) {
             $emit->('footnote_def', $1, $2);

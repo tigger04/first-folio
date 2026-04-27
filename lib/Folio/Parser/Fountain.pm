@@ -168,9 +168,9 @@ sub parse {
             next;
         }
 
-        # Transition: UPPERCASE ending in TO: (treat as stage direction)
+        # Transition: UPPERCASE ending in TO:
         if ($prev_blank && $line =~ /^[A-Z\s]+TO:\s*$/) {
-            $emit->('stage_direction', $line);
+            $emit->('transition', $line);
             $after_character = 0;
             $prev_blank = 0;
             $i += 1;
@@ -179,7 +179,7 @@ sub parse {
 
         # Forced transition: >text (without <)
         if ($line =~ /^>(.+)$/ && $line !~ /<$/) {
-            $emit->('stage_direction', $1);
+            $emit->('transition', $1);
             $after_character = 0;
             $prev_blank = 0;
             $i += 1;

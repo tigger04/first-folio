@@ -41,7 +41,6 @@ BEGIN {
 # Arguments (named):
 #   source_dir => directory containing the source file
 #   cli        => hashref of CLI flag overrides (flat keys mapped into folio:)
-#   style      => 'british' (default) or 'american'
 #
 # Returns: a Folio::Config object
 sub load {
@@ -49,39 +48,68 @@ sub load {
 
     my $source_dir = $args{source_dir};
     my $cli        = $args{cli} || {};
-    my $style      = $args{style} || 'british';
 
     # Layer 1: British preset (always the base)
     my $base = _load_yaml_file("$PRESET_DIR/british-script.yaml")
         or die "Error: cannot load British preset from $PRESET_DIR/british-script.yaml\n";
 
-    # Layer 1b: American overrides if requested
+    # Peek ahead: determine style from CLI, local config, or global config
+    # (in reverse priority so highest wins)
+    my $style = 'british';
+
+    my $global_path = "$ENV{HOME}/.config/first-folio/script.yaml";
+    my $global_data;
+    if (-f $global_path) {
+        $global_data = _load_yaml_file($global_path);
+        if ($global_data && $global_data->{folio} && $global_data->{folio}{style}) {
+            $style = lc $global_data->{folio}{style};
+        }
+    }
+
+    my $local_data;
+    if (defined $source_dir && $source_dir ne '') {
+        my $local_path = "$source_dir/script.yaml";
+        if (-f $local_path) {
+            $local_data = _load_yaml_file($local_path);
+            if ($local_data && $local_data->{folio} && $local_data->{folio}{style}) {
+                $style = lc $local_data->{folio}{style};
+            }
+        }
+    }
+
+    # CLI --style overrides everything
+    if (defined $cli->{style}) {
+        $style = lc $cli->{style};
+    }
+
+    # Normalise style names
+    $style = 'american' if $style eq 'us' || $style eq 'american';
+    $style = 'british'  if $style eq 'uk' || $style eq 'british';
+
+    # Layer 2: American overrides if style is american (sits above British, below user config)
     if ($style eq 'american') {
         my $us = _load_yaml_file("$PRESET_DIR/us-overrides-script.yaml");
         _deep_merge($base, $us) if $us;
     }
 
-    # Layer 2: global config
-    my $global_path = "$ENV{HOME}/.config/first-folio/script.yaml";
-    if (-f $global_path) {
-        my $global = _load_yaml_file($global_path);
-        _deep_merge($base, $global) if $global;
+    # Layer 3: global config
+    if ($global_data) {
+        _deep_merge($base, $global_data);
     }
 
-    # Layer 3: local config (source file directory)
-    if (defined $source_dir && $source_dir ne '') {
-        my $local_path = "$source_dir/script.yaml";
-        if (-f $local_path) {
-            my $local = _load_yaml_file($local_path);
-            _deep_merge($base, $local) if $local;
-        }
+    # Layer 4: local config (source file directory)
+    if ($local_data) {
+        _deep_merge($base, $local_data);
     }
 
-    # Layer 4: CLI flags (mapped into folio: namespace)
+    # Layer 5: CLI flags (mapped into folio: namespace)
     if (%$cli) {
         for my $key (keys %$cli) {
             next if !defined $cli->{$key};
-            $base->{folio}{$key} = $cli->{$key} if exists $base->{folio}{$key};
+            next if $key eq 'style';  # already handled above
+            if (exists $base->{folio}{$key}) {
+                $base->{folio}{$key} = $cli->{$key};
+            }
         }
     }
 

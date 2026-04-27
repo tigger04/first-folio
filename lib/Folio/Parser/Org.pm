@@ -100,6 +100,9 @@ sub parse {
                 my ($name, $direction) = _parse_character_line($text);
                 $emit->('character', $name, $direction);
                 $after_h4 = 1;
+            } elsif ($level == 5) {
+                $emit->('transition', $text);
+                $after_h4 = 0;
             }
             next;
         }

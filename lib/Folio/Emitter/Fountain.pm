@@ -109,6 +109,13 @@ sub new {
             my ($name, $text) = @_;
             $footnotes{$name} = $text;
         },
+        transition => sub {
+            my ($text) = @_;
+            $emit_blank->();
+            # Uppercase transitions per Fountain convention
+            push @lines, uc($text);
+            $needs_blank = 1;
+        },
         intro_header => sub {
             my ($title) = @_;
             $emit_blank->();

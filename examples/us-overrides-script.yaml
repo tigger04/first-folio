@@ -7,8 +7,8 @@ render:
   transitions: true
 
 folio:
-  # Courier Prime is the screenwriting standard
-  font: monospace
+  # Courier Prime is the screenwriting standard; Typst default mono as fallback
+  font: New Computer Modern Mono
   # Standard US paper size
   page: us-letter
   # American convention uses inch margins

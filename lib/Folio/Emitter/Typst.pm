@@ -26,6 +26,12 @@ sub new {
             my ($key, $value) = @_;
             $front_matter{$key} = $value;
         },
+        transition => sub {
+            my ($text) = @_;
+            if ($in_dialogue) { push @typst_body, ']'; $in_dialogue = 0; }
+            my $escaped = _escape_typst($text);
+            push @typst_body, "#align(right)[#text(style: \"normal\")[${escaped}]]";
+        },
         intro_header => sub {
             my ($title) = @_;
             if ($in_dialogue) { push @typst_body, ']'; $in_dialogue = 0; }

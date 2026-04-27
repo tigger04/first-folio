@@ -71,6 +71,7 @@ sub cmd_convert {
     GetOptions(
         'to=s'                => \$to_format,
         'force'               => \$force,
+        'style=s'             => \$cli_overrides{'style'},
         'font=s'              => \$cli_overrides{'font'},
         'font-size=s'         => \$cli_overrides{'font-size'},
         'margin=s'            => \$cli_overrides{'margin'},
@@ -270,6 +271,9 @@ sub _filter_emitter {
     if (!$config->get('render.footnotes')) {
         $filtered{footnote_def} = sub {};
     }
+    if (!$config->get('render.transitions')) {
+        $filtered{transition} = sub {};
+    }
     if (!$config->get('render.frontmatter')) {
         $filtered{intro_header} = sub {};
         $filtered{intro_text}   = sub {};
@@ -338,6 +342,7 @@ Use --to to specify the output format for stdout mode.
 
 Options:
   --to FORMAT              Output format (org, md, fountain, pdf)
+  --style STYLE            Layout style: british (default) or us
   --force                  Force binary output to terminal
 
 PDF options (ignored for non-PDF output):

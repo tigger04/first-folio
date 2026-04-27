@@ -85,6 +85,10 @@ sub new {
             my ($name, $text) = @_;
             $footnotes{$name} = $text;
         },
+        transition => sub {
+            my ($text) = @_;
+            push @lines, "***** $text";
+        },
         intro_header => sub {
             my ($title) = @_;
             push @lines, '';

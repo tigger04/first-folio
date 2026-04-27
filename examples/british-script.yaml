@@ -14,7 +14,7 @@ render:
   transitions: true
 
 folio:
-  font: serif
+  font: New Computer Modern
   font-size: 12pt
   page: a4
   margin: 25mm
