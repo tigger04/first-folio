@@ -152,6 +152,27 @@ sub get {
     return _normalise_bool($node);
 }
 
+# Get a config value with inheritance up the path tree.
+# e.g. get_inherited('folio.positioning.speech.speaker', 'font')
+# checks: speaker.font -> speech.font -> positioning.font -> folio.font
+# Returns the first defined value found, or undef.
+sub get_inherited {
+    my ($self, $path, $key) = @_;
+
+    my @parts = split /\./, $path;
+
+    # Try from most specific to least specific
+    while (@parts) {
+        my $try = join('.', @parts, $key);
+        my $val = $self->get($try);
+        return $val if defined $val;
+        pop @parts;
+    }
+
+    # Try the key alone at the root
+    return $self->get($key);
+}
+
 sub _normalise_bool {
     my ($value) = @_;
     return $value if !defined $value || ref $value;

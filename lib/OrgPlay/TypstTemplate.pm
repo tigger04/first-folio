@@ -19,14 +19,15 @@ sub preamble {
     my $margin    = $config->get('folio.margin')     // '25mm';
     my $page      = $config->get('folio.page')       // 'a4';
 
-    # Per-element font/size helper — falls back to global folio.font / folio.font-size
+    # Per-element font/size with cascading inheritance
+    # e.g. speech.speaker inherits from speech, then folio
     my $efont = sub {
         my ($path) = @_;
-        return $config->get("folio.positioning.${path}.font") // $font;
+        return $config->get_inherited("folio.positioning.${path}", 'font') // $font;
     };
     my $efsize = sub {
         my ($path) = @_;
-        return $config->get("folio.positioning.${path}.font-size") // $font_size;
+        return $config->get_inherited("folio.positioning.${path}", 'font-size') // $font_size;
     };
 
     # Speech positioning
@@ -199,20 +200,29 @@ sub title_page {
 
     return '' unless $title;
 
-    # Read title page config
+    # Read title page config — font inherits: element -> title-page -> folio
     my $tp_pagenum = $config ? $config->get('folio.title-page.page-number') : 0;
+    my $global_font = $config ? ($config->get('folio.font') // 'Libertinus Serif') : 'Libertinus Serif';
+
+    my $tp_font = sub {
+        my ($element) = @_;
+        return $config ? ($config->get_inherited("folio.title-page.${element}", 'font') // $global_font) : $global_font;
+    };
 
     my $t_align  = $config ? ($config->get('folio.title-page.title.align')     // 'center') : 'center';
-    my $t_fsize  = $config ? ($config->get('folio.title-page.title.font-size') // '24pt')   : '24pt';
+    my $t_fsize  = $config ? ($config->get_inherited('folio.title-page.title', 'font-size') // '24pt')   : '24pt';
+    my $t_font   = $tp_font->('title');
     my $t_bold   = $config ? ($config->get('folio.title-page.title.bold')      // 1)        : 1;
     my $t_italic = $config ? ($config->get('folio.title-page.title.italic')    // 0)        : 0;
     my $t_pos    = $config ? ($config->get('folio.title-page.title.position')  // 'third')  : 'third';
 
-    my $st_fsize  = $config ? ($config->get('folio.title-page.subtitle.font-size')    // '14pt') : '14pt';
+    my $st_fsize  = $config ? ($config->get_inherited('folio.title-page.subtitle', 'font-size') // '14pt') : '14pt';
+    my $st_font   = $tp_font->('subtitle');
     my $st_italic = $config ? ($config->get('folio.title-page.subtitle.italic')       // 1)      : 1;
     my $st_space  = $config ? ($config->get('folio.title-page.subtitle.space-before') // '1em')  : '1em';
 
-    my $a_fsize  = $config ? ($config->get('folio.title-page.author.font-size')    // '12pt') : '12pt';
+    my $a_fsize  = $config ? ($config->get_inherited('folio.title-page.author', 'font-size') // '12pt') : '12pt';
+    my $a_font   = $tp_font->('author');
     my $a_italic = $config ? ($config->get('folio.title-page.author.italic')       // 0)      : 0;
     my $a_prefix = $config ? ($config->get('folio.title-page.author.prefix')       // '')     : '';
     my $a_space  = $config ? ($config->get('folio.title-page.author.space-before') // '2em')  : '2em';
@@ -270,18 +280,21 @@ TYPST
 
     my $t_weight = $t_bold ? ', weight: "bold"' : '';
     my $t_style  = $t_italic ? ', style: "italic"' : '';
+    my $t_font_attr = ($t_font ne $global_font) ? "font: \"${t_font}\", " : '';
+    my $st_font_attr = ($st_font ne $global_font) ? "font: \"${st_font}\", " : '';
+    my $a_font_attr = ($a_font ne $global_font) ? "font: \"${a_font}\", " : '';
 
     $out .= <<"TYPST";
 #align(${t_align})[
   #v(${v_offset})
-  #text(size: ${t_fsize}${t_weight}${t_style})[$title]
+  #text(${t_font_attr}size: ${t_fsize}${t_weight}${t_style})[$title]
 TYPST
 
     if ($subtitle) {
         my $st_style = $st_italic ? ', style: "italic"' : '';
         $out .= <<"TYPST";
   #v(${st_space})
-  #text(size: ${st_fsize}${st_style})[$subtitle]
+  #text(${st_font_attr}size: ${st_fsize}${st_style})[$subtitle]
 TYPST
     }
 
@@ -294,18 +307,18 @@ TYPST
                 next unless $part =~ /\S/;
                 $out .= <<"TYPST";
   #v(${a_space})
-  #text(size: ${a_fsize})[${part}]
+  #text(${a_font_attr}size: ${a_fsize})[${part}]
 TYPST
-                $a_space = '0.3em';  # tighter spacing after first prefix line
+                $a_space = '0.3em';
             }
             $out .= <<"TYPST";
   #v(0.3em)
-  #text(size: ${a_fsize}${a_style})[$author]
+  #text(${a_font_attr}size: ${a_fsize}${a_style})[$author]
 TYPST
         } else {
             $out .= <<"TYPST";
   #v(${a_space})
-  #text(size: ${a_fsize}${a_style})[${a_prefix}$author]
+  #text(${a_font_attr}size: ${a_fsize}${a_style})[${a_prefix}$author]
 TYPST
         }
     }
