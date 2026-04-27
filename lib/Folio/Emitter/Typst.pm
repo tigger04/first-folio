@@ -240,9 +240,24 @@ sub _escape_typst {
     my ($text) = @_;
 
     my @markup_slots;
+    # Process multi-char markers first, then single-char
+    # Markdown/Fountain bold italic: ***text*** -> Typst *_text_*
+    $text =~ s{\*\*\*([^*\n]+?)\*\*\*}{
+        push @markup_slots, "*_${1}_*";
+        "\x00MARKUP" . $#markup_slots . "\x00"
+    }ge;
+    # Markdown/Fountain bold: **text** -> Typst *text*
+    $text =~ s{\*\*([^*\n]+?)\*\*}{
+        push @markup_slots, "*${1}*";
+        "\x00MARKUP" . $#markup_slots . "\x00"
+    }ge;
     # Org underline: _text_ -> Typst #underline[text]
+    # Process after ** so _**text**_ captures the bold placeholder inside
     $text =~ s{(?<!\w)_([^_\n]+?)_(?!\w)}{
-        push @markup_slots, "#underline[${1}]";
+        my $inner = $1;
+        # Restore any markup placeholders inside the underline content
+        $inner =~ s/\x00MARKUP(\d+)\x00/$markup_slots[$1]/g;
+        push @markup_slots, "#underline[${inner}]";
         "\x00MARKUP" . $#markup_slots . "\x00"
     }ge;
     # Org italic: /text/ -> Typst _text_
