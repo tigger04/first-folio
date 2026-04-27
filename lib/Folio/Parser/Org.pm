@@ -175,9 +175,11 @@ sub parse {
 sub _parse_character_line {
     my ($text) = @_;
 
-    # Match uppercase character name (2+ uppercase Unicode letters, possibly with punctuation after)
-    # Then optional direction
-    if ($text =~ /^(\p{Lu}[\p{Lu}\s]*\p{Lu}|\p{Lu}+)\s*[,:]?\s*(.*)$/) {
+    # Match uppercase character name: one or more all-caps words.
+    # A word starting with uppercase followed by lowercase is direction, not name.
+    # e.g. "LOIS Following his gaze" -> name=LOIS, direction=Following his gaze
+    #      "NURSE BAYANI softly"     -> name=NURSE BAYANI, direction=softly
+    if ($text =~ /^(\p{Lu}+(?:\s+\p{Lu}+)*)\s*[,:]?\s*(.*)$/) {
         my $name = $1;
         my $rest = $2;
 

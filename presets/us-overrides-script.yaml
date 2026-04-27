@@ -50,9 +50,9 @@ folio:
       dialogue:
         # Dialogue on its own line below cue/instruction
         placement: new-line
-        # Standard WGA dialogue column
-        indent: 2.5in
-        wrap-indent: 2.5in
+        # Stage play: wider column than screenplay
+        indent: 1in
+        wrap-indent: 1in
     stage-direction:
       # American action paragraphs are roman, not italic
       italic: false
