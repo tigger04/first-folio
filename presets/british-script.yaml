@@ -159,3 +159,18 @@ folio:
       page-break-before: false
       space-before: 2em
       space-after: 0.5em
+
+  letter:
+    font: Libertinus Serif
+    font-size: 11pt
+    page: a4
+    margin-top: 25mm
+    margin-bottom: 25mm
+    margin-left: 30mm
+    margin-right: 25mm
+    space-before-closing: 0.8em
+    space-before-signoff: 1.5em
+    space-after-sender: 2em
+    space-after-recipient: 1em
+    space-after-date: 1em
+    space-after-subject: 0.5em

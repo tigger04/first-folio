@@ -31,8 +31,13 @@ if (@ARGV && $ARGV[0] !~ /^-/) {
 # Handle top-level --help and --version (before subcommand parsing)
 if (grep { $_ eq '--help' || $_ eq '-h' } @ARGV) {
     if ($subcommand eq 'convert') {
-        shift @ARGV;  # remove 'convert'
+        shift @ARGV;
         print_convert_usage();
+        exit 0;
+    }
+    if ($subcommand eq 'cover') {
+        shift @ARGV;
+        print_cover_usage();
         exit 0;
     }
     print_usage();
@@ -48,6 +53,9 @@ if (grep { $_ eq '--version' } @ARGV) {
 if ($subcommand eq 'convert') {
     shift @ARGV;  # remove 'convert'
     cmd_convert();
+} elsif ($subcommand eq 'cover') {
+    shift @ARGV;  # remove 'cover'
+    cmd_cover();
 } elsif ($subcommand eq '') {
     print STDERR "Error: no subcommand given.\n";
     print STDERR "Usage: folio <command> [options]\n";
@@ -321,6 +329,7 @@ A format converter for stage plays.
 
 Commands:
   convert    Convert a play between formats
+  cover      Generate cover letters from :letter: tagged sections
 
 Options:
   -h, --help     Show this help message
@@ -357,5 +366,99 @@ PDF options (ignored for non-PDF output):
   --[no-]direction-center  Centre stage directions
 
 Config: script.yaml in source dir or ~/.config/first-folio/script.yaml
+USAGE
+}
+
+# --- cover subcommand ---
+
+sub cmd_cover {
+    require Folio::CoverLetter;
+    require Folio::Config;
+
+    my $to_filter;
+    my $output_dir;
+    my $help = 0;
+
+    Getopt::Long::GetOptions(
+        'to=s'     => \$to_filter,
+        'dir=s'    => \$output_dir,
+        'help|h'   => \$help,
+    ) or do { print_cover_usage(); exit 2; };
+
+    if ($help) {
+        print_cover_usage();
+        exit 0;
+    }
+
+    my $source_path = shift @ARGV;
+    if (!defined $source_path) {
+        die "Error: no source file specified.\nUsage: folio cover <source.org> [--to RECIPIENT]\n";
+    }
+    if (! -f $source_path) {
+        die "Error: file not found: $source_path\n";
+    }
+
+    $output_dir //= dirname($source_path);
+
+    my $config = Folio::Config->load(source_dir => dirname($source_path));
+
+    open(my $fh, '<:encoding(UTF-8)', $source_path)
+        or die "Error: cannot open $source_path: $!\n";
+    my $letters = Folio::CoverLetter->parse($fh);
+    close $fh;
+
+    if (!@$letters) {
+        die "Error: no :letter: tagged sections found in $source_path\n";
+    }
+
+    my $count = 0;
+    for my $letter (@$letters) {
+        # Filter by recipient org if --to given
+        if (defined $to_filter) {
+            next unless lc($letter->{org}) eq lc($to_filter)
+                     || $letter->{recipient} =~ /\Q$to_filter\E/i;
+        }
+
+        # Generate output filename from org name or recipient
+        my $slug = $letter->{org} || $letter->{recipient};
+        $slug =~ s/[^a-zA-Z0-9]+/-/g;
+        $slug =~ s/^-|-$//g;
+        $slug = lc $slug;
+        $slug = "letter-$count" unless $slug;
+
+        my $output = "$output_dir/cover-${slug}.pdf";
+
+        Folio::CoverLetter->render_pdf($letter, output => $output, config => $config);
+        print "Generated: $output\n";
+        $count += 1;
+    }
+
+    if ($count == 0 && defined $to_filter) {
+        die "Error: no recipients matching '$to_filter' found.\n";
+    }
+
+    print "$count cover letter(s) generated.\n" if $count > 1;
+}
+
+sub print_cover_usage {
+    print <<'USAGE';
+Usage: folio cover <source.org> [options]
+
+Generate cover letters from :letter: tagged sections in an org file.
+One PDF is generated per recipient.
+
+Options:
+  --to RECIPIENT     Generate only for this recipient (matches org name or address)
+  --dir DIR          Output directory (default: same as source file)
+  -h, --help         Show this help message
+
+Placeholders in letter body:
+  [org]       Recipient's short org name (:org: tag)
+  [moniker]   Recipient's informal name (:moniker: tag)
+  [title]     Play title from #+TITLE
+  [subtitle]  Play subtitle from #+SUBTITLE
+  [version]   Play version from #+VERSION
+  [date]      Play date from #+DATE
+  [author]    Author from #+AUTHOR
 USAGE
 }

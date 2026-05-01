@@ -7,7 +7,7 @@
 #+STARTUP: showeverything
 #+OPTIONS: toc:nil
 
-* Cover letters                                                     :cover:
+* Cover letters                                                     :letter:
 ** 15 Maple Avenue / Clontarf / Dublin D03                          :sender:
 ** The script you'll regret passing up!                             :subject:
 I know you don't normally accept unsolicited scripts, but I just knew you wouldn't want to miss this one.
