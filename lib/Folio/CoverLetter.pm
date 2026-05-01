@@ -45,22 +45,12 @@ sub parse {
         for my $recip (@current_recipients) {
             my $letter_body = $body;
 
-            # Placeholder substitution
-            my $org      = $recip->{org}      // '';
-            my $moniker  = $recip->{moniker}  // '';
-            my $title    = $front_matter{title}    // '';
-            my $subtitle = $front_matter{subtitle} // '';
-            my $version  = $front_matter{version}  // '';
-            my $fmdate   = $front_matter{date}     // '';
-            my $author   = $front_matter{author}   // '';
-
-            $letter_body =~ s/\[org\]/$org/g;
-            $letter_body =~ s/\[moniker\]/$moniker/g;
-            $letter_body =~ s/\[title\]/$title/g;
-            $letter_body =~ s/\[subtitle\]/$subtitle/g;
-            $letter_body =~ s/\[version\]/$version/g;
-            $letter_body =~ s/\[date\]/$fmdate/g;
-            $letter_body =~ s/\[author\]/$author/g;
+            # Placeholder substitution — merge all sources into one lookup
+            my %vars = (
+                %front_matter,            # #+TITLE, #+AUTHOR, etc.
+                %$recip,                  # org, moniker, address, any custom tags
+            );
+            $letter_body =~ s/\[(\w+)\]/defined $vars{$1} ? $vars{$1} : "[$1]"/ge;
 
             push @letters, {
                 sender    => $sender // $front_matter{author} // '',
@@ -69,11 +59,11 @@ sub parse {
                 closing   => $closing,
                 signoff   => $signoff,
                 recipient => $recip->{address},
-                org       => $org,
-                moniker   => $moniker,
+                org       => $recip->{org}     // '',
+                moniker   => $recip->{moniker} // '',
                 date      => $current_date,
-                author    => $author,
-                email     => $front_matter{email} // '',
+                author    => $front_matter{author} // '',
+                email     => $front_matter{email}  // '',
                 contact   => $front_matter{contact} // '',
             };
         }
@@ -142,18 +132,10 @@ sub parse {
             next;
         }
 
-        # H4 :org:
-        if ($line =~ /^\*{4}\s+(.*?)\s*:org:\s*$/) {
+        # H4 with any tag — captured as recipient-level variable
+        if ($line =~ /^\*{4}\s+(.*?)\s*:(\w+):\s*$/) {
             if (@current_recipients) {
-                $current_recipients[-1]{org} = $1;
-            }
-            next;
-        }
-
-        # H4 :moniker:
-        if ($line =~ /^\*{4}\s+(.*?)\s*:moniker:\s*$/) {
-            if (@current_recipients) {
-                $current_recipients[-1]{moniker} = $1;
+                $current_recipients[-1]{$2} = $1;
             }
             next;
         }
