@@ -1,0 +1,83 @@
+#+TITLE: Cold Open
+#+AUTHOR: A. Screenwriter
+#+SUBTITLE: A Short Film
+#+DATE: April 2026
+#+VERSION: First Draft
+
+* Characters
+|--------+----------------------------------------------|
+| Sarah  | Detective. 30s. Sharp, tired, undercaffeinated. |
+| Mike   | Her partner. 40s. Talks too much.              |
+| Barista | Early 20s. Unimpressed by everything.         |
+|--------+----------------------------------------------|
+
+* Act I
+** Scene 1
+*** INT. COFFEE SHOP — MORNING
+*** A queue. Fluorescent light. The hiss of a milk steamer. Sarah stands at the counter, badge visible on her belt.
+**** Barista
+What can I get you.
+**** Sarah
+Black coffee. Large.
+**** Barista
+We don't do large. We do tall, grande, and —
+**** Sarah
+The biggest one you have.
+*** The Barista pours without enthusiasm.
+*** Mike enters, out of breath, phone in hand.
+**** Mike
+We got a call.
+**** Sarah
+I just ordered.
+**** Mike
+It's a bad one.
+**** Sarah
+They're all bad ones.
+**** Mike
+This one's worse.
+*** Sarah looks at the coffee being poured. Looks at Mike. Back at the coffee.
+**** Sarah
+How much worse.
+**** Mike
+Remember the Kowalski thing?
+**** Sarah
+Which Kowalski thing.
+**** Mike
+Exactly.
+*** Beat.
+**** Sarah to Barista
+Make it a double.
+*** Lights down                                                     :transition:
+
+** Scene 2
+*** EXT. ALLEYWAY — CONTINUOUS
+*** Rain. Blue and red lights strobing off wet brick. Yellow tape. A uniform at the perimeter.
+**** Mike
+So the call came in at 0600.
+**** Sarah
+Who found it.
+**** Mike
+Jogger.
+**** Sarah
+Of course it was a jogger.
+**** Mike
+They always find them.
+**** Sarah
+Nobody else is up at six.
+*** They duck under the tape. Sarah crouches. Studies something we cannot see.
+**** Sarah
+Where's forensics.
+**** Mike
+Twenty minutes out.
+**** Sarah
+Twenty minutes.
+**** Mike
+Traffic.
+**** Sarah
+At six in the morning.
+**** Mike
+It's the marathon today.
+*** Sarah stands. Looks at the sky. Rain on her face.
+**** Sarah
+I should have stayed for the coffee.
+*** Blackout                                                        :transition:
