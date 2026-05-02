@@ -65,4 +65,8 @@ endif
 	@echo "Updating Homebrew formula..."
 	@bash scripts/update-homebrew.sh "$(shell echo $(RELEASE_VERSION) | sed 's/^v//')"
 	@echo ""
-	@echo "Done. Tagged $(RELEASE_VERSION)."
+	@echo "Publishing to Homebrew tap..."
+	@cp homebrew/Formula/first-folio.rb $(HOME)/code/tigoss/homebrew-tap/Formula/
+	@cd $(HOME)/code/tigoss/homebrew-tap && git add -A && git commit -m "first-folio $(shell echo $(RELEASE_VERSION) | sed 's/^v//')" && git push
+	@echo ""
+	@echo "Done. Tagged $(RELEASE_VERSION). Published to tigger04/tap."
