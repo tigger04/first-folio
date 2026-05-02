@@ -213,10 +213,10 @@ sub render_pdf {
 #set text(font: "${font}", size: ${font_size})
 #set par(leading: 0.8em, spacing: 1.2em)
 
-// Sender — top right
-#align(right)[
+// Sender — positioned right, text left-aligned within block
+#align(right)[#block(width: auto)[#align(left)[
 ${sender_lines}\\
-${contact_block}]
+${contact_block}]]]
 
 #v(${sp_sender})
 
