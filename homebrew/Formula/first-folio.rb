@@ -12,23 +12,18 @@ class FirstFolio < Formula
   depends_on "typst"
 
   def install
-    # Main CLI
-    bin.install "bin/folio"
+    # Install into libexec preserving the directory structure so
+    # FindBin resolves ../lib and ../presets correctly from bin/
+    (libexec/"bin").install "bin/folio"
+    libexec.install "lib"
+    libexec.install "presets"
 
-    # Perl modules
-    (lib/"folio").install Dir["lib/Folio"]
-    (lib/"folio").install Dir["lib/Folio/Config"]
-    (lib/"folio").install Dir["lib/Folio/Emitter"]
-    (lib/"folio").install Dir["lib/Folio/Parser"]
-    (lib/"folio").install Dir["lib/OrgPlay"]
-    (lib/"folio").install Dir["lib/YAML"]
-
-    # Style presets
-    (share/"folio/presets").install Dir["presets/*"]
-
-    # Rewrite the lib path in the folio script
-    inreplace bin/"folio", '$FindBin::RealBin/../lib', "#{lib}/folio"
-    inreplace bin/"folio", '$FindBin::RealBin/../presets', "#{share}/folio/presets"
+    # Wrapper script in bin/ that exec's the real one
+    (bin/"folio").write <<~SH
+      #!/bin/bash
+      exec "#{libexec}/bin/folio" "$@"
+    SH
+    (bin/"folio").chmod 0755
   end
 
   def caveats
