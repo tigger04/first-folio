@@ -4,8 +4,8 @@
 class FirstFolio < Formula
   desc "Format converter for stage plays — org, markdown, fountain, PDF"
   homepage "https://github.com/tadg-paul/first-folio"
-  url "https://github.com/tadg-paul/first-folio/archive/refs/tags/v0.4.4.tar.gz"
-  sha256 "f876630e0f4aeb0f329377e8f0d0fdec720c3a477d166aa04128c375e293342a"
+  url "https://github.com/tadg-paul/first-folio/archive/refs/tags/v0.4.5.tar.gz"
+  sha256 "0783a3b81746f53fcf37f1638ceb2d7db8724408abac88ffffdf2e26907914b0"
   license "MIT"
   head "https://github.com/tadg-paul/first-folio.git", branch: "master"
 
